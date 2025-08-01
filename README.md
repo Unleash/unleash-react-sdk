@@ -1,3 +1,9 @@
+# Unleash React SDK
+
+Unleash is a private, secure, and scalable [feature management platform](https://www.getunleash.io/) built to reduce the risk of releasing new features and accelerate software development. This React SDK is designed to help you integrate with Unleash and evaluate feature flags inside your application.
+
+You can use this client with [Unleash Enterprise](https://www.getunleash.io/pricing?utm_source=readme&utm_medium=react) or [Unleash Open Source](https://github.com/Unleash/unleash).
+
 # Installation
 
 ```bash
@@ -8,14 +14,13 @@ yarn add @unleash/proxy-client-react unleash-proxy-client
 
 # How to use
 
-This library uses the core [unleash-proxy-client](https://github.com/Unleash/unleash-proxy-client-js) JS client as a base.
+This library uses the core [unleash-js-sdk](https://github.com/Unleash/unleash-js-sdk) client as a base.
 
 ## Initialize the client
 
-*NOTE*: [unleash-proxy](https://github.com/Unleash/unleash-proxy) is in maintenance mode. It is recommend to use the [Frontend API](https://docs.getunleash.io/reference/front-end-api) or [unleash-edge](https://github.com/Unleash/unleash-edge) instead.
+*NOTE*: [unleash-proxy](https://github.com/Unleash/unleash-proxy) is in maintenance mode. It is recommend to use the [Frontend API](https://docs.getunleash.io/reference/front-end-api) or [unleash-edge](https://docs.getunleash.io/reference/unleash-edge) instead.
 
-Prepare [Unleash Proxy](https://docs.getunleash.io/reference/unleash-proxy) secret
-or [Frontend API Access](https://docs.getunleash.io/reference/front-end-api) token.
+For the following step you will need a [frontend API Token](https://docs.getunleash.io/reference/front-end-api) or [unleash-edge pretrusted token](https://docs.getunleash.io/reference/unleash-edge#pretrusted-tokens).
 
 Import the provider like this in your entrypoint file (typically index.js/ts):
 
@@ -24,8 +29,8 @@ import { createRoot } from 'react-dom/client';
 import { FlagProvider } from '@unleash/proxy-client-react';
 
 const config = {
-  url: '<unleash-url>/api/frontend', // Your front-end API URL or the Unleash proxy's URL (https://<proxy-url>/proxy)
-  clientKey: '<your-token>', // A client-side API token OR one of your proxy's designated client keys (previously known as proxy secrets)
+  url: '<unleash-url>/api/frontend', // Your front-end API URL or the Unleash edge URL
+  clientKey: '<your-token>', // A frontend token OR one of your unleash-edge pretrusted token
   refreshInterval: 15, // How often (in seconds) the client should poll the proxy for updates
   appName: 'your-app-name', // The name of your application. It's only used for identifying your application
 };
@@ -47,8 +52,6 @@ root.render(
 To connect this SDK to your Unleash instance's [front-end API](https://docs.getunleash.io/reference/front-end-api), use the URL to your Unleash instance's front-end API (`<unleash-url>/api/frontend`) as the `url` parameter. For the `clientKey` parameter, use a `FRONTEND` token generated from your Unleash instance. Refer to the [_how to create API tokens_](https://docs.getunleash.io/how-to/how-to-create-api-tokens) guide for the necessary steps.
 
 To connect this SDK to unleash-edge, follow the documentation provided in the [unleash-edge repository](https://github.com/unleash/unleash-edge).
-
-To connect this SDK to the [Unleash proxy](https://docs.getunleash.io/reference/unleash-proxy), use the proxy's URL and a [proxy client key](https://docs.getunleash.io/reference/api-tokens-and-client-keys#proxy-client-keys). The [_configuration_ section of the Unleash proxy docs](https://docs.getunleash.io/reference/unleash-proxy#configuration) contains more info on how to configure client keys for your proxy.
 
 ## Check feature toggle status
 
@@ -350,7 +353,7 @@ The major release is driven by Node14 end of life and represents no other change
 
 ## Upgrade path from v4 -> v5
 
-[FlagContext public interface changed](https://github.com/Unleash/proxy-client-react/commit/b783ef4016dbb881ac3d878cffaf5241b047cc35#diff-825c82ad66c3934257e0ee3e0511d9223db22e7ddf5de9cbdf6485206e3e02cfL20-R20). If you used FlagContext directly you may have to adjust your code slightly to accomodate the new type changes.
+[FlagContext public interface changed](https://github.com/Unleash/unleash-react-sdk/commit/b783ef4016dbb881ac3d878cffaf5241b047cc35#diff-825c82ad66c3934257e0ee3e0511d9223db22e7ddf5de9cbdf6485206e3e02cfL20-R20). If you used FlagContext directly you may have to adjust your code slightly to accomodate the new type changes.
 
 ##  Design philosophy
 This feature flag SDK is designed according to our design philosophy. You can [read more about that here](https://docs.getunleash.io/topics/feature-flags/feature-flag-best-practices).
