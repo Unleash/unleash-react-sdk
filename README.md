@@ -12,6 +12,13 @@ npm install @unleash/proxy-client-react unleash-proxy-client
 yarn add @unleash/proxy-client-react unleash-proxy-client
 ```
 
+## Example application
+
+To see the SDK in action, explore the [`examples/basic-app`](examples/basic-app/README.md) directory. 
+It contains a minimal Vite + React setup that connects to Unleash, evaluates a feature toggle, 
+and updates the evaluation context dynamically at runtime. The README in that folder includes step-by-step instructions 
+for running the example.
+
 # How to use
 
 This library uses the core [unleash-js-sdk](https://github.com/Unleash/unleash-js-sdk) client as a base.

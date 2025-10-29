@@ -1,3 +1,5 @@
+/examples/basic-app/node_modules
+/examples/basic-app/.env
 /node_modules/
 /dist
 yarn-error.log
