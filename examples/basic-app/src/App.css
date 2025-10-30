@@ -1,0 +1,110 @@
+:root {
+  color-scheme: light dark;
+  font-synthesis: none;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f6f6f6;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #ffffff 0%, #f0f4ff 100%);
+}
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  color: #1d2130;
+}
+
+.app--loading {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(12px);
+  margin-bottom: 1.5rem;
+}
+
+.card h2 {
+  margin-top: 0;
+}
+
+.toggle {
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  display: inline-block;
+  font-weight: 600;
+}
+
+.toggle--on {
+  background: rgba(34, 197, 94, 0.16);
+  color: #0d6831;
+}
+
+.toggle--off {
+  background: rgba(248, 113, 113, 0.18);
+  color: #991b1b;
+}
+
+.context-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.context-form__row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.context-form input {
+  flex: 1;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  padding: 0.6rem 0.9rem;
+  font-size: 1rem;
+}
+
+.context-form button {
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.context-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.context-form__error {
+  color: #991b1b;
+  margin: 0;
+}
+
+pre {
+  background: rgba(15, 23, 42, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  overflow: auto;
+}
