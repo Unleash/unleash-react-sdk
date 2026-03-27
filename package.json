@@ -1,6 +1,6 @@
 {
   "name": "@unleash/proxy-client-react",
-  "version": "5.0.1",
+  "version": "5.1.0-beta.0",
   "description": "React interface for working with unleash",
   "type": "module",
   "main": "./dist/unleash-react.umd.cjs",
