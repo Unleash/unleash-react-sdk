@@ -15,7 +15,7 @@ const useFlags = () => {
     return () => {
       client.off('update', onUpdate);
     };
-  }, []);
+  }, [client.getAllToggles]);
 
   return flags;
 };

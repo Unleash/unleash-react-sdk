@@ -4,38 +4,35 @@ export type {
   IConfig,
   IContext,
   IMutableContext,
-  IVariant,
   IToggle,
+  IVariant,
 } from 'unleash-proxy-client';
 export {
-  UnleashClient,
+  InMemoryStorageProvider,
   type IStorageProvider,
   LocalStorageProvider,
-  InMemoryStorageProvider,
+  UnleashClient,
 } from 'unleash-proxy-client';
 
 import FlagContext from './FlagContext';
-import FlagProvider from './FlagProvider';
+import FlagProvider, { type IFlagProvider } from './FlagProvider';
 import useFlag from './useFlag';
 import useFlags from './useFlags';
 import useFlagsStatus from './useFlagsStatus';
-import useVariant from './useVariant';
-import useUnleashContext from './useUnleashContext';
 import useUnleashClient from './useUnleashClient';
+import useUnleashContext from './useUnleashContext';
+import useVariant from './useVariant';
 
-import { IFlagProvider } from './FlagProvider';
-
+export type { IFlagProvider };
 export {
   FlagContext,
   FlagProvider,
   useFlag,
   useFlags,
   useFlagsStatus,
-  useVariant,
-  useUnleashContext,
   useUnleashClient,
+  useUnleashContext,
+  useVariant,
 };
-
-export type { IFlagProvider };
 
 export default FlagProvider;
