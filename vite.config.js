@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
@@ -11,7 +11,7 @@ export default defineConfig({
       name: 'UnleashReact',
       fileName: 'unleash-react',
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: ['react', 'unleash-proxy-client'],
       output: {
         exports: 'named',
@@ -29,7 +29,7 @@ export default defineConfig({
       enabled: true,
       include: ['src/**/*.ts'],
       exclude: ['src/**/*.test.ts'],
-      provider: 'istanbul',
+      provider: 'v8',
     },
     setupFiles: './testSetup.js',
   },
