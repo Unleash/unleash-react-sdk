@@ -1,10 +1,10 @@
-import { FormEvent, useState } from 'react';
 import {
   useFlag,
   useFlagsStatus,
   useUnleashContext,
-  useVariant
+  useVariant,
 } from '@unleash/proxy-client-react';
+import { type FormEvent, useState } from 'react';
 import './App.css';
 
 const TOGGLE_NAME = 'demo-app.simple-toggle';
@@ -47,7 +47,7 @@ const ToggleStatus = ({ toggleName }: { toggleName: string }) => {
 
 const ContextForm = ({
   userId,
-  onSubmit
+  onSubmit,
 }: {
   userId: string;
   onSubmit: (nextUserId: string) => Promise<void>;
@@ -73,7 +73,9 @@ const ContextForm = ({
       await onSubmit(value);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'Failed to update the Unleash context.'
+        err instanceof Error
+          ? err.message
+          : 'Failed to update the Unleash context.',
       );
     } finally {
       setIsSubmitting(false);
@@ -88,7 +90,7 @@ const ContextForm = ({
           id="userId"
           name="userId"
           value={value}
-          onChange={event => {
+          onChange={(event) => {
             setError(null);
             setValue(event.target.value);
           }}
@@ -106,7 +108,7 @@ const ContextForm = ({
 const App = () => {
   const { flagsReady, flagsError } = useFlagsStatus();
   const [currentUserId, setCurrentUserId] = useState<string>(
-    import.meta.env.VITE_EXAMPLE_DEFAULT_USER ?? 'guest'
+    import.meta.env.VITE_EXAMPLE_DEFAULT_USER ?? 'guest',
   );
   const updateContext = useUnleashContext();
 
@@ -129,9 +131,8 @@ const App = () => {
       <header>
         <h1>Unleash React SDK Example</h1>
         <p>
-          Connected to the Unleash Frontend API configured in{' '}
-          <code>.env</code>. The example evaluates the{' '}
-          <code>{TOGGLE_NAME}</code> toggle.
+          Connected to the Unleash Frontend API configured in <code>.env</code>.
+          The example evaluates the <code>{TOGGLE_NAME}</code> toggle.
         </p>
       </header>
 

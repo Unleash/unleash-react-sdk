@@ -1,4 +1,4 @@
-var path = require('path');
+var path = require('node:path');
 
 const getCommonConfig = (outputFileName) => ({
   entry: './src/index.ts',

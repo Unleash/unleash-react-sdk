@@ -1,8 +1,7 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import useFlagsStatus from './useFlagsStatus';
-import FlagProvider from './FlagProvider';
 import { UnleashClient } from 'unleash-proxy-client';
+import FlagProvider from './FlagProvider';
+import useFlagsStatus from './useFlagsStatus';
 
 const TestComponent = () => {
   const { flagsReady } = useFlagsStatus();
@@ -15,7 +14,6 @@ const ErrorTestComponent = () => {
 
   return <div>{flagsError ? 'flagsError' : 'no issue'}</div>;
 };
-
 
 const mockClient = {
   on: vi.fn(),
@@ -64,7 +62,7 @@ test('should start when already initialized client is passed', async () => {
               toggles: [],
             }),
             headers: new Headers(),
-          })
+          }),
         );
       }),
     clientKey: '123',
@@ -114,7 +112,7 @@ test('should handle client errors', async () => {
 
   expect(consoleError).toHaveBeenCalledWith(
     'Unleash: unable to fetch feature toggles',
-    expect.any(Error)
+    expect.any(Error),
   );
   consoleError.mockRestore();
 });

@@ -1,11 +1,11 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { EVENTS, UnleashClient } from 'unleash-proxy-client';
 import FlagProvider from './FlagProvider';
-import useFlagsStatus from './useFlagsStatus';
-import { act } from 'react-dom/test-utils';
 import useFlag from './useFlag';
 import { useFlagContext } from './useFlagContext';
+import useFlagsStatus from './useFlagsStatus';
 import useVariant from './useVariant';
 
 const fetchMock = vi.fn(async () => {
@@ -74,7 +74,7 @@ test('should render toggles', async () => {
         client.on(EVENTS.READY, () => {
           setTimeout(resolve, 1);
         });
-      })
+      }),
   );
 
   // After client initialization
@@ -83,7 +83,7 @@ test('should render toggles', async () => {
   expect(screen.getByTestId('ready')).toHaveTextContent('true');
   expect(screen.getByTestId('state')).toHaveTextContent('true');
   expect(screen.getByTestId('variant')).toHaveTextContent(
-    '{"name":"A","payload":{"type":"string","value":"A"},"enabled":true,"feature_enabled":true}'
+    '{"name":"A","payload":{"type":"string","value":"A"},"enabled":true,"feature_enabled":true}',
   );
 });
 
@@ -117,7 +117,7 @@ test('should be ready from the start if bootstrapped', () => {
       startClient={false}
     >
       <Component />
-    </FlagProvider>
+    </FlagProvider>,
   );
 
   expect(screen.getByText('ready')).toBeInTheDocument();
@@ -153,7 +153,7 @@ test('should immediately return value if boostrapped', () => {
       startClient={false}
     >
       <Component />
-    </FlagProvider>
+    </FlagProvider>,
   );
 
   expect(screen.queryByText('enabled')).toBeInTheDocument();
@@ -198,7 +198,7 @@ test('should render limited times when bootstrapped', async () => {
   render(
     <FlagProvider unleashClient={client} config={config}>
       <Component />
-    </FlagProvider>
+    </FlagProvider>,
   );
 
   expect(screen.queryByText('enabled')).toBeInTheDocument();
@@ -212,7 +212,7 @@ test('should render limited times when bootstrapped', async () => {
         client.on(EVENTS.READY, () => {
           setTimeout(resolve, 1);
         });
-      })
+      }),
   );
 
   expect(renders).toBe(1);

@@ -1,6 +1,6 @@
-import { vi } from 'vitest';
 import { renderHook } from '@testing-library/react-hooks/native';
 import { useContext } from 'react';
+import { vi } from 'vitest';
 import useVariant, { variantHasChanged } from './useVariant';
 
 vi.mock('react', async () => {
@@ -160,85 +160,85 @@ test('should remove event listeners when unmounted', () => {
 });
 
 describe('Variant change detection', () => {
-    test('If the variants are identical, it returns `false`', () => {
-        const a = {
-            name: 'a',
-            enabled: true,
-            payload: {
-                type: 'string',
-                value: 'data',
-            },
-        };
-        const b = {
-            name: 'a',
-            enabled: true,
-            payload: {
-                type: 'string',
-                value: 'data',
-            },
-        };
+  test('If the variants are identical, it returns `false`', () => {
+    const a = {
+      name: 'a',
+      enabled: true,
+      payload: {
+        type: 'string',
+        value: 'data',
+      },
+    };
+    const b = {
+      name: 'a',
+      enabled: true,
+      payload: {
+        type: 'string',
+        value: 'data',
+      },
+    };
 
-        expect(variantHasChanged(a, b)).toBeFalsy();
-    });
+    expect(variantHasChanged(a, b)).toBeFalsy();
+  });
 
-    test('If the new variant is undefined, it counts as a change', () => {
-        const a = { name: 'a', enabled: true };
+  test('If the new variant is undefined, it counts as a change', () => {
+    const a = { name: 'a', enabled: true };
 
-        expect(variantHasChanged(a, undefined)).toBeTruthy();
-    });
+    expect(variantHasChanged(a, undefined)).toBeTruthy();
+  });
 
-    test('Name change is detected', () => {
-        const a = { name: 'a', enabled: true };
-        const b = { name: 'b', enabled: true };
+  test('Name change is detected', () => {
+    const a = { name: 'a', enabled: true };
+    const b = { name: 'b', enabled: true };
 
-        expect(variantHasChanged(a, b)).toBeTruthy();
-    });
+    expect(variantHasChanged(a, b)).toBeTruthy();
+  });
 
-    test('Enabled state change is detected', () => {
-        const enabled = { name: 'a', enabled: true };
-        const disabled = { name: 'a', enabled: false };
+  test('Enabled state change is detected', () => {
+    const enabled = { name: 'a', enabled: true };
+    const disabled = { name: 'a', enabled: false };
 
-        expect(variantHasChanged(enabled, disabled)).toBeTruthy();
-    });
-    test('Payload type change is detected', () => {
-        const a = {
-            name: 'a',
-            enabled: true,
-            payload: {
-                type: 'string',
-                value: '{}',
-            },
-        };
-        const b = {
-            name: 'a',
-            enabled: true,
-            payload: {
-                type: 'json',
-                value: '{}',
-            },
-        };
+    expect(variantHasChanged(enabled, disabled)).toBeTruthy();
+  });
+  test('Payload type change is detected', () => {
+    const a = {
+      name: 'a',
+      enabled: true,
+      payload: {
+        type: 'string',
+        value: '{}',
+      },
+    };
+    const b = {
+      name: 'a',
+      enabled: true,
+      payload: {
+        type: 'json',
+        value: '{}',
+      },
+    };
 
-        expect(variantHasChanged(a, b)).toBeTruthy();
-    });
+    expect(variantHasChanged(a, b)).toBeTruthy();
+  });
 
-    test('Payload value change is detected', () => {
-        const a = {
-            name: 'a',
-            enabled: true,
-            payload: {
-                type: 'string',
-                value: '1',
-            },
-        };
-        const b = {
-            name: 'a',
-            enabled: true,
-            payload: {
-                type: 'string',
-                value: '2',
-            },
-        };
+  test('Payload value change is detected', () => {
+    const a = {
+      name: 'a',
+      enabled: true,
+      payload: {
+        type: 'string',
+        value: '1',
+      },
+    };
+    const b = {
+      name: 'a',
+      enabled: true,
+      payload: {
+        type: 'string',
+        value: '2',
+      },
+    };
 
-        expect(variantHasChanged(a, b)).toBeTruthy();
-    });
+    expect(variantHasChanged(a, b)).toBeTruthy();
+  });
 });

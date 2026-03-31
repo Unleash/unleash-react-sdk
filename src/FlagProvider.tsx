@@ -1,7 +1,13 @@
 /** @format */
 
-import React, { type FC, type PropsWithChildren, useEffect, useMemo, useState } from 'react';
-import { type IConfig, IMutableContext, UnleashClient } from 'unleash-proxy-client';
+import React, {
+  type FC,
+  type PropsWithChildren,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { type IConfig, UnleashClient } from 'unleash-proxy-client';
 import FlagContext, { type IFlagContextValue } from './FlagContext';
 
 export interface IFlagProvider {
@@ -25,7 +31,7 @@ const offlineConfig: IConfig = {
 const _startTransition = 'startTransition';
 // fallback for React <18 which doesn't support startTransition
 // Fallback for React <18 and exclude startTransition if in React Native
-const defaultStartTransition = React[_startTransition] || (fn => fn());
+const defaultStartTransition = React[_startTransition] || ((fn) => fn());
 
 const FlagProvider: FC<PropsWithChildren<IFlagProvider>> = ({
   config: customConfig,
@@ -33,27 +39,31 @@ const FlagProvider: FC<PropsWithChildren<IFlagProvider>> = ({
   unleashClient,
   startClient = true,
   stopClient = true,
-  startTransition = defaultStartTransition
+  startTransition = defaultStartTransition,
 }) => {
   const config = customConfig || offlineConfig;
   const client = React.useRef<UnleashClient>(
-    unleashClient || new UnleashClient(config)
+    unleashClient || new UnleashClient(config),
   );
   const [flagsReady, setFlagsReady] = React.useState(
     Boolean(
       unleashClient
-        ? (customConfig?.bootstrap && customConfig?.bootstrapOverride !== false) || unleashClient.isReady?.()
-        : config.bootstrap && config.bootstrapOverride !== false
-    )
+        ? (customConfig?.bootstrap &&
+            customConfig?.bootstrapOverride !== false) ||
+            unleashClient.isReady?.()
+        : config.bootstrap && config.bootstrapOverride !== false,
+    ),
   );
-  const [flagsError, setFlagsError] = useState(client.current.getError?.() || null);
+  const [flagsError, setFlagsError] = useState(
+    client.current.getError?.() || null,
+  );
 
   useEffect(() => {
     if (!config && !unleashClient) {
       console.error(
         `You must provide either a config or an unleash client to the flag provider.
         If you are initializing the client in useEffect, you can avoid this warning
-        by checking if the client exists before rendering.`
+        by checking if the client exists before rendering.`,
       );
     }
 
@@ -63,11 +73,11 @@ const FlagProvider: FC<PropsWithChildren<IFlagProvider>> = ({
       });
     };
 
-    const clearErrorCallback = (e: any) => {
+    const clearErrorCallback = (_e: any) => {
       startTransition(() => {
         setFlagsError(null);
       });
-    }
+    };
 
     let timeout: ReturnType<typeof setTimeout> | null = null;
     const readyCallback = () => {
@@ -120,7 +130,7 @@ const FlagProvider: FC<PropsWithChildren<IFlagProvider>> = ({
       setFlagsReady,
       setFlagsError,
     }),
-    [flagsReady, flagsError]
+    [flagsReady, flagsError],
   );
 
   return (

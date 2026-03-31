@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
 import { render, screen } from '@testing-library/react';
-import { UnleashClient, type IVariant, EVENTS } from 'unleash-proxy-client';
+import React, { useEffect, useState } from 'react';
+import { EVENTS, type IVariant, UnleashClient } from 'unleash-proxy-client';
 import FlagProvider from './FlagProvider';
 import { useFlagContext } from './useFlagContext';
 import '@testing-library/jest-dom';
@@ -75,10 +75,10 @@ const FlagConsumerAfterClientInit = () => {
 
 const FlagConsumerBeforeClientInit = () => {
   const { updateContext, isEnabled, getVariant, client, on } = useFlagContext();
-  const [enabled, setIsEnabled] = useState(false);
-  const [variant, setVariant] = useState<IVariant | null>(null);
-  const [context, setContext] = useState<any>('nothing');
-  const [currentOn, setCurrentOn] = useState<UnleashClient | null>(null);
+  const [_enabled, setIsEnabled] = useState(false);
+  const [_variant, setVariant] = useState<IVariant | null>(null);
+  const [_context, setContext] = useState<any>('nothing');
+  const [_currentOn, setCurrentOn] = useState<UnleashClient | null>(null);
 
   useEffect(() => {
     if (!client) {
@@ -104,23 +104,23 @@ test('A consumer that subscribes AFTER client init shows values from provider an
     <FlagProvider config={givenConfig}>
       <FlagConsumerAfterClientInit />
     </FlagProvider>,
-    {}
+    {},
   );
 
   expect(getVariantMock).toHaveBeenCalledWith(givenFlagName);
   expect(isEnabledMock).toHaveBeenCalledWith(givenFlagName);
   expect(updateContextMock).toHaveBeenCalledWith(givenContext);
   expect(screen.getByText(/consuming value isEnabled/)).toHaveTextContent(
-    'consuming value isEnabled true'
+    'consuming value isEnabled true',
   );
   expect(screen.getByText(/consuming value updateContext/)).toHaveTextContent(
-    'consuming value updateContext [object Promise]'
+    'consuming value updateContext [object Promise]',
   );
   expect(screen.getByText(/consuming value getVariant/)).toHaveTextContent(
-    'consuming value getVariant A'
+    'consuming value getVariant A',
   );
   expect(screen.getByText(/consuming value on/)).toHaveTextContent(
-    'consuming value on subscribed'
+    'consuming value on subscribed',
   );
 });
 
@@ -129,7 +129,7 @@ test('A consumer that subscribes BEFORE client init shows values from provider a
     <FlagProvider config={givenConfig}>
       <FlagConsumerBeforeClientInit />
     </FlagProvider>,
-    {}
+    {},
   );
 
   expect(getVariantMock).toHaveBeenCalledWith(givenFlagName);
@@ -142,23 +142,23 @@ test('A consumer should be able to get a variant when the client is passed into 
     <FlagProvider unleashClient={new UnleashClient(givenConfig)}>
       <FlagConsumerAfterClientInit />
     </FlagProvider>,
-    {}
+    {},
   );
 
   expect(getVariantMock).toHaveBeenCalledWith(givenFlagName);
   expect(isEnabledMock).toHaveBeenCalledWith(givenFlagName);
   expect(updateContextMock).toHaveBeenCalledWith(givenContext);
   expect(screen.getByText(/consuming value isEnabled/)).toHaveTextContent(
-    'consuming value isEnabled true'
+    'consuming value isEnabled true',
   );
   expect(screen.getByText(/consuming value updateContext/)).toHaveTextContent(
-    'consuming value updateContext [object Promise]'
+    'consuming value updateContext [object Promise]',
   );
   expect(screen.getByText(/consuming value getVariant/)).toHaveTextContent(
-    'consuming value getVariant A'
+    'consuming value getVariant A',
   );
   expect(screen.getByText(/consuming value on/)).toHaveTextContent(
-    'consuming value on subscribed'
+    'consuming value on subscribed',
   );
 });
 
@@ -179,7 +179,7 @@ test('A memoized consumer should not rerender when the context provider values a
   const { rerender } = render(
     <FlagProvider config={givenConfig}>
       <MemoizedConsumer />
-    </FlagProvider>
+    </FlagProvider>,
   );
 
   expect(renderCounter).toHaveBeenCalledTimes(1);
@@ -187,7 +187,7 @@ test('A memoized consumer should not rerender when the context provider values a
   rerender(
     <FlagProvider config={givenConfig}>
       <MemoizedConsumer />
-    </FlagProvider>
+    </FlagProvider>,
   );
 
   expect(renderCounter).toHaveBeenCalledTimes(1);
@@ -206,7 +206,7 @@ test('should update when ready event is sent', () => {
   render(
     <FlagProvider unleashClient={client}>
       <div>Hi</div>
-    </FlagProvider>
+    </FlagProvider>,
   );
 
   localMock.mockImplementation((event, cb) => {
@@ -231,7 +231,7 @@ test('should register error when error event is sent', () => {
   render(
     <FlagProvider unleashClient={client}>
       <div>Hi</div>
-    </FlagProvider>
+    </FlagProvider>,
   );
 
   localMock.mockImplementation((event, cb) => {
@@ -258,7 +258,7 @@ test('should not start client if startClient is false', () => {
   render(
     <FlagProvider unleashClient={client} startClient={false}>
       <div>Hi</div>
-    </FlagProvider>
+    </FlagProvider>,
   );
 
   expect(localMock).not.toHaveBeenCalled();
@@ -278,7 +278,7 @@ test('should not start client if startClient is false when passing config', () =
   render(
     <FlagProvider config={givenConfig} startClient={false}>
       <div>Hi</div>
-    </FlagProvider>
+    </FlagProvider>,
   );
 
   expect(localMock).not.toHaveBeenCalled();

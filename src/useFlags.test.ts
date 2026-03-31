@@ -1,8 +1,8 @@
-import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks/native';
-import useFlags from './useFlags';
-import type { IToggle } from 'unleash-proxy-client';
+import { useContext } from 'react';
 import { act } from 'react-dom/test-utils';
+import type { IToggle } from 'unleash-proxy-client';
+import useFlags from './useFlags';
 
 const toggles = [
   {
