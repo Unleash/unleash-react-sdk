@@ -8,9 +8,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/unleash-react.js",
-      "require": "./dist/unleash-react.umd.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/unleash-react.umd.cjs"
     }
   },
   "browser": "./dist/unleash-react.umd.cjs",
@@ -43,7 +43,7 @@
     "@testing-library/react": "^14.1.2",
     "@testing-library/react-hooks": "^8.0.1",
     "@types/react": "^18.2.38",
-    "@vitest/coverage-istanbul": "^0.34.6",
+    "@vitest/coverage-istanbul": "^3.2.4",
     "jsdom": "^23.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -52,7 +52,7 @@
     "unleash-proxy-client": "3.8.0-beta.3",
     "unplugin-dts": "^1.0.1",
     "vite": "6.4.2",
-    "vitest": "^0.34.6"
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "unleash-proxy-client": "3.8.0-beta.3"
