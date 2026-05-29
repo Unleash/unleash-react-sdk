@@ -22,7 +22,7 @@ From the repository root, install the dependencies used by the example:
 
 ```bash
 cd examples/basic-app
-yarn install
+pnpm install
 ```
 
 The Vite configuration aliases `@unleash/proxy-client-react` to the local `src`
@@ -51,7 +51,7 @@ VITE_UNLEASH_ENVIRONMENT=development
 Start the Vite dev server:
 
 ```bash
-yarn dev
+pnpm dev
 ```
 
 Open the printed URL (defaults to http://localhost:5173) in your browser. The
