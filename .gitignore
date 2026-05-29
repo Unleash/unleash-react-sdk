@@ -1,7 +1,7 @@
 /examples/basic-app/node_modules
 /examples/basic-app/.env
+/examples/basic-app/dist
 /node_modules/
 /dist
-yarn-error.log
 /coverage
 .idea
