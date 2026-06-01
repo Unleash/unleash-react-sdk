@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import { renderHook } from '@testing-library/react-hooks/native';
+import { renderHook } from '@testing-library/react';
 import { useContext } from 'react';
 import useVariant, { variantHasChanged } from './useVariant';
 

@@ -262,14 +262,6 @@
     picocolors "^1.1.1"
     redent "^3.0.0"
 
-"@testing-library/react-hooks@^8.0.1":
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/react-hooks/-/react-hooks-8.0.1.tgz#0924bbd5b55e0c0c0502d1754657ada66947ca12"
-  integrity sha512-Aqhl2IVmLt8IovEVarNDFuJDVWVvhnr9/GCU6UUnrYXwgDFF9h2L2o2P9KBni1AST5sT6riAyoukFLyjQUgD/g==
-  dependencies:
-    "@babel/runtime" "^7.12.5"
-    react-error-boundary "^3.1.0"
-
 "@testing-library/react@^14.1.2":
   version "14.1.2"
   resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-14.1.2.tgz#a2b9e9ee87721ec9ed2d7cfc51cc04e474537c32"
@@ -344,13 +336,13 @@
   resolved "https://registry.npmjs.org/@types/scheduler/-/scheduler-0.16.2.tgz"
   integrity sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==
 
-"@vitest/coverage-v8@4.1.2":
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/@vitest/coverage-v8/-/coverage-v8-4.1.2.tgz#2617f76d12065d2caadedb92bb7bb86cd2af1131"
-  integrity sha512-sPK//PHO+kAkScb8XITeB1bf7fsk85Km7+rt4eeuRR3VS1/crD47cmV5wicisJmjNdfeokTZwjMk4Mj2d58Mgg==
+"@vitest/coverage-v8@^4.1.2":
+  version "4.1.8"
+  resolved "https://registry.yarnpkg.com/@vitest/coverage-v8/-/coverage-v8-4.1.8.tgz#6a5dd34552840a0ace0396d0e94c7459beb80d14"
+  integrity sha512-lt3kovsyHwYe00wq4D1ti0Z974fWj4NLp6siqiyEufUpyFwK9Yhi7rBhac9JL5aA0zoMrJqc4vYPZRUnI7l7nw==
   dependencies:
     "@bcoe/v8-coverage" "^1.0.2"
-    "@vitest/utils" "4.1.2"
+    "@vitest/utils" "4.1.8"
     ast-v8-to-istanbul "^1.0.0"
     istanbul-lib-coverage "^3.2.2"
     istanbul-lib-report "^3.0.1"
@@ -380,13 +372,6 @@
     "@vitest/spy" "4.1.8"
     estree-walker "^3.0.3"
     magic-string "^0.30.21"
-
-"@vitest/pretty-format@4.1.2":
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/@vitest/pretty-format/-/pretty-format-4.1.2.tgz#c2671aa1c931dc8f2759589fc87ea4b2602892c5"
-  integrity sha512-dwQga8aejqeuB+TvXCMzSQemvV9hNEtDDpgUKDzOmNQayl2OG241PSWeJwKRH3CiC+sESrmoFd49rfnq7T4RnA==
-  dependencies:
-    tinyrainbow "^3.1.0"
 
 "@vitest/pretty-format@4.1.8":
   version "4.1.8"
@@ -418,26 +403,17 @@
   resolved "https://registry.yarnpkg.com/@vitest/spy/-/spy-4.1.8.tgz#3abfe9301d25c39f808dcaa9f10fec0dd370e564"
   integrity sha512-6EevtBp6OZOPF7bmz36HrGMeP3txgVSrgebWxHOafDXGkhIzfXK14f8KF6MuFfgXXUeHxmpD3BQxkV00/3s5mA==
 
-"@vitest/ui@4.1.2":
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/@vitest/ui/-/ui-4.1.2.tgz#9e76db9dca3b8d59c63e0549b50304b007dd81f3"
-  integrity sha512-/irhyeAcKS2u6Zokagf9tqZJ0t8S6kMZq4ZG9BHZv7I+fkRrYfQX4w7geYeC2r6obThz39PDxvXQzZX+qXqGeg==
+"@vitest/ui@^4.1.2":
+  version "4.1.8"
+  resolved "https://registry.yarnpkg.com/@vitest/ui/-/ui-4.1.8.tgz#521687753303a417acfa3630b2283957dc1c1b82"
+  integrity sha512-RUS2ZU2TsduVrI+9c12uTNaKrNUTsm6yFt3fueEUB9iKvyC2UP83F+sqIz00HQIah4UOL1TMoDAki8K0NjGvsA==
   dependencies:
-    "@vitest/utils" "4.1.2"
+    "@vitest/utils" "4.1.8"
     fflate "^0.8.2"
     flatted "^3.4.2"
     pathe "^2.0.3"
     sirv "^3.0.2"
     tinyglobby "^0.2.15"
-    tinyrainbow "^3.1.0"
-
-"@vitest/utils@4.1.2":
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/@vitest/utils/-/utils-4.1.2.tgz#32be8f42eb6683a598b1c61d7ec9f55596c60ecb"
-  integrity sha512-xw2/TiX82lQHA06cgbqRKFb5lCAy3axQ4H4SoUFhUsg+wztiet+co86IAMDtF6Vm1hc7J6j09oh/rgDn+JdKIQ==
-  dependencies:
-    "@vitest/pretty-format" "4.1.2"
-    convert-source-map "^2.0.0"
     tinyrainbow "^3.1.0"
 
 "@vitest/utils@4.1.8":
@@ -1138,11 +1114,6 @@ nwsapi@^2.2.7:
   resolved "https://registry.yarnpkg.com/nwsapi/-/nwsapi-2.2.7.tgz#738e0707d3128cb750dddcfe90e4610482df0f30"
   integrity sha512-ub5E4+FBPKwAZx0UwIQOjYWGHTEq5sPqHQNRN8Z9e4A7u3Tj1weLJsL59yH9vmvqEtBHaOmT6cYQKIZOxp35FQ==
 
-object-assign@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.npmjs.org/object-assign/-/object-assign-4.1.1.tgz"
-  integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
-
 obug@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/obug/-/obug-2.1.1.tgz#2cba74ff241beb77d63055ddf4cd1e9f90b538be"
@@ -1244,39 +1215,10 @@ react-dom@^18.2.0:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
 
-react-error-boundary@^3.1.0:
-  version "3.1.4"
-  resolved "https://registry.npmjs.org/react-error-boundary/-/react-error-boundary-3.1.4.tgz"
-  integrity sha512-uM9uPzZJTF6wRQORmSrvOIgt4lJ9MC1sNgEOj2XGsDTRE4kmpWxg7ENK9EWNKJRMAOY9z0MuF4yIfl6gp4sotA==
-  dependencies:
-    "@babel/runtime" "^7.12.5"
-
-"react-is@^16.12.0 || ^17.0.0 || ^18.0.0", react-is@^17.0.1:
+react-is@^17.0.1:
   version "17.0.2"
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
-
-react-is@^18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
-  integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
-
-react-shallow-renderer@^16.15.0:
-  version "16.15.0"
-  resolved "https://registry.yarnpkg.com/react-shallow-renderer/-/react-shallow-renderer-16.15.0.tgz#48fb2cf9b23d23cde96708fe5273a7d3446f4457"
-  integrity sha512-oScf2FqQ9LFVQgA73vr86xl2NaOIX73rh+YFqcOp68CWj56tSfgtGKrEbyhCj0rSijyG9M1CYprTh39fBi5hzA==
-  dependencies:
-    object-assign "^4.1.1"
-    react-is "^16.12.0 || ^17.0.0 || ^18.0.0"
-
-react-test-renderer@^18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react-test-renderer/-/react-test-renderer-18.2.0.tgz#1dd912bd908ff26da5b9fca4fd1c489b9523d37e"
-  integrity sha512-JWD+aQ0lh2gvh4NM3bBM42Kx+XybOxCpgYK7F8ugAlpaTSnWsX+39Z4XkOykGZAHrjwwTZT3x3KxswVWxHPUqA==
-  dependencies:
-    react-is "^18.2.0"
-    react-shallow-renderer "^16.15.0"
-    scheduler "^0.23.0"
 
 react@^18.2.0:
   version "18.2.0"
