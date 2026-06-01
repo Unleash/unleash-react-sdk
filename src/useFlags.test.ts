@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { renderHook } from '@testing-library/react-hooks/native';
+import { renderHook } from '@testing-library/react';
 import useFlags from './useFlags';
 import type { IToggle } from 'unleash-proxy-client';
 import { act } from 'react-dom/test-utils';
@@ -34,6 +34,7 @@ test('should return flags', () => {
     client: {
       getAllToggles: () => toggles,
       on: vi.fn(),
+      off: vi.fn(),
     },
   });
 
