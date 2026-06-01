@@ -2320,13 +2320,12 @@ universalify@^0.2.0:
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.2.0.tgz#6451760566fa857534745ab1dde952d1b1761be0"
   integrity sha512-CJ1QgKmNg3CwvAv/kOFmtnEN05f0D/cn9QntgNOQlQF9dgvVTHj3t+8JPdjqawCHk7V/KA+fbUqzZ9XWhcqPUg==
 
-unleash-proxy-client@3.8.0-beta.3:
-  version "3.8.0-beta.3"
-  resolved "https://registry.yarnpkg.com/unleash-proxy-client/-/unleash-proxy-client-3.8.0-beta.3.tgz#b75197f6afd39f5bf188c68d86f269b7f1256eb4"
-  integrity sha512-JFIF1kqQvYxIi6XltSijDLHULrMOWwBT8UHm+TzuO5/pXxI9+4MO7fafhw8r/SDXin1ZphfG6FWqw0jyXh2CTA==
+unleash-proxy-client@^3.8.0:
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/unleash-proxy-client/-/unleash-proxy-client-3.8.0.tgz#5acc7ca0db568644028ac6f770c6b6a75652308b"
+  integrity sha512-7+IMDM/t8sUojbYmOMoRW0SjD7+ShOrpI+vR1QWSv1Fnf7IxXLKp1dVhWnWyh9p4iyqFw4RXG9Iw5LHuBMV4aA==
   dependencies:
     tiny-emitter "^2.1.0"
-    uuid "^9.0.1"
 
 unplugin-dts@^1.0.1:
   version "1.0.1"
@@ -2367,11 +2366,6 @@ url-parse@^1.5.3:
   dependencies:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
-
-uuid@^9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
-  integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
 
 vite-node@0.34.6:
   version "0.34.6"
