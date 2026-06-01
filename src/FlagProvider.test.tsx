@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { render, screen } from '@testing-library/react';
-import { type Mock } from 'vitest';
 import { UnleashClient, type IVariant, EVENTS } from 'unleash-proxy-client';
 import FlagProvider from './FlagProvider';
 import { useFlagContext } from './useFlagContext';
@@ -22,7 +21,7 @@ const givenConfig = {
 const givenFlagName = 'test';
 const givenContext = { session: 'context' };
 
-const UnleashClientSpy = vi.fn().mockReturnValue({
+const createClientMock = (overrides = {}) => ({
   getVariant: getVariantMock,
   updateContext: updateContextMock,
   start: startClientMock,
@@ -30,14 +29,19 @@ const UnleashClientSpy = vi.fn().mockReturnValue({
   isEnabled: isEnabledMock,
   on: onMock,
   off: offMock,
+  ...overrides,
 });
+
+const { UnleashClientSpy } = vi.hoisted(() => ({
+  UnleashClientSpy: vi.fn(),
+}));
 
 vi.mock('unleash-proxy-client', async (importOriginal) => {
   const mod = await importOriginal();
 
   return {
-    ...mod as any,
-    UnleashClient: vi.fn(),
+    ...(mod as any),
+    UnleashClient: UnleashClientSpy,
   };
 });
 
@@ -90,7 +94,9 @@ const FlagConsumerBeforeClientInit = () => {
 
 beforeEach(() => {
   onMock.mockClear();
-  (UnleashClient as Mock).mockImplementation(UnleashClientSpy);
+  UnleashClientSpy.mockImplementation(function MockUnleashClient() {
+    return createClientMock();
+  });
 });
 
 test('A consumer that subscribes AFTER client init shows values from provider and calls all the functions', () => {
@@ -160,7 +166,8 @@ test('A memoized consumer should not rerender when the context provider values a
   const renderCounter = vi.fn();
 
   const MemoizedConsumer = React.memo(() => {
-    const { updateContext, isEnabled, getVariant, client, on } = useFlagContext();
+    const { updateContext, isEnabled, getVariant, client, on } =
+      useFlagContext();
 
     renderCounter();
 
@@ -188,14 +195,10 @@ test('A memoized consumer should not rerender when the context provider values a
 
 test('should update when ready event is sent', () => {
   const localMock = vi.fn();
-  UnleashClientSpy.mockReturnValue({
-    getVariant: getVariantMock,
-    updateContext: updateContextMock,
-    start: startClientMock,
-    stop: stopClientMock,
-    isEnabled: isEnabledMock,
-    on: localMock,
-    off: offMock,
+  UnleashClientSpy.mockImplementation(function MockUnleashClient() {
+    return createClientMock({
+      on: localMock,
+    });
   });
 
   const client = new UnleashClient(givenConfig);
@@ -217,14 +220,10 @@ test('should update when ready event is sent', () => {
 
 test('should register error when error event is sent', () => {
   const localMock = vi.fn();
-  UnleashClientSpy.mockReturnValue({
-    getVariant: getVariantMock,
-    updateContext: updateContextMock,
-    start: startClientMock,
-    stop: stopClientMock,
-    isEnabled: isEnabledMock,
-    on: localMock,
-    off: offMock,
+  UnleashClientSpy.mockImplementation(function MockUnleashClient() {
+    return createClientMock({
+      on: localMock,
+    });
   });
 
   const client = new UnleashClient(givenConfig);
@@ -247,14 +246,11 @@ test('should register error when error event is sent', () => {
 test('should not start client if startClient is false', () => {
   const localMock = vi.fn();
   const stopMock = vi.fn();
-  UnleashClientSpy.mockReturnValue({
-    getVariant: getVariantMock,
-    updateContext: updateContextMock,
-    start: localMock,
-    stop: stopMock,
-    isEnabled: isEnabledMock,
-    on: onMock,
-    off: offMock,
+  UnleashClientSpy.mockImplementation(function MockUnleashClient() {
+    return createClientMock({
+      start: localMock,
+      stop: stopMock,
+    });
   });
 
   const client = new UnleashClient(givenConfig);
@@ -272,16 +268,12 @@ test('should not start client if startClient is false', () => {
 test('should not start client if startClient is false when passing config', () => {
   const localMock = vi.fn();
   const stopMock = vi.fn();
-  UnleashClientSpy.mockReturnValue({
-    getVariant: getVariantMock,
-    updateContext: updateContextMock,
-    start: localMock,
-    stop: stopMock,
-    isEnabled: isEnabledMock,
-    on: onMock,
-    off: offMock,
+  UnleashClientSpy.mockImplementation(function MockUnleashClient() {
+    return createClientMock({
+      start: localMock,
+      stop: stopMock,
+    });
   });
-
 
   render(
     <FlagProvider config={givenConfig} startClient={false}>
