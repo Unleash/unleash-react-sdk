@@ -12,7 +12,7 @@
     "@unleash/proxy-client-react": "file:../..",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "unleash-proxy-client": "^3.7.3"
+    "unleash-proxy-client": "^3.8.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
