@@ -4,7 +4,7 @@ import { useFlagContext } from './useFlagContext';
 const useFlag = (featureName: string) => {
   const  { isEnabled, client }  = useFlagContext();
   const [flag, setFlag] = useState(!!isEnabled(featureName));
-  const flagRef = useRef<typeof flag>();
+  const flagRef = useRef<typeof flag>(flag);
   flagRef.current = flag;
 
   useEffect(() => {
