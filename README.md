@@ -14,9 +14,9 @@ yarn add @unleash/proxy-client-react unleash-proxy-client
 
 ## Example application
 
-To see the SDK in action, explore the [`examples/basic-app`](examples/basic-app/README.md) directory. 
-It contains a minimal Vite + React setup that connects to Unleash, evaluates a feature toggle, 
-and updates the evaluation context dynamically at runtime. The README in that folder includes step-by-step instructions 
+To see the SDK in action, explore the [`examples/basic-app`](examples/basic-app/README.md) directory.
+It contains a minimal Vite + React setup that connects to Unleash, evaluates a feature toggle,
+and updates the evaluation context dynamically at runtime. The README in that folder includes step-by-step instructions
 for running the example.
 
 # How to use
@@ -361,6 +361,10 @@ The major release is driven by Node14 end of life and represents no other change
 ## Upgrade path from v4 -> v5
 
 [FlagContext public interface changed](https://github.com/Unleash/unleash-react-sdk/commit/b783ef4016dbb881ac3d878cffaf5241b047cc35#diff-825c82ad66c3934257e0ee3e0511d9223db22e7ddf5de9cbdf6485206e3e02cfL20-R20). If you used FlagContext directly you may have to adjust your code slightly to accomodate the new type changes.
+
+## Upgrade path from v5 -> v6
+
+Dropped support for Node versions lower than 20. Also declared React as an explicit peer dependency.
 
 ##  Design philosophy
 This feature flag SDK is designed according to our design philosophy. You can [read more about that here](https://docs.getunleash.io/topics/feature-flags/feature-flag-best-practices).
