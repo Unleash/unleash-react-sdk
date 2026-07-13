@@ -159,6 +159,47 @@ test('should remove event listeners when unmounted', () => {
   expect(clientMock.off).nthCalledWith(2, ...clientMock.on.mock.calls[1]);
 });
 
+test('reconciles the variant when ready/update fired before the effect subscribed', () => {
+  // Seeded with the disabled variant at render, but the client already resolved
+  // the enabled one — the ready/update fired before we subscribed, so `on` never
+  // invokes our handlers.
+  getVariantMock.mockReturnValueOnce(givenVariantA_disabled);
+  getVariantMock.mockReturnValue(givenVariantA);
+  vi.mocked(useContext).mockReturnValue({
+    client: clientMock,
+    getVariant: getVariantMock,
+  });
+  clientMock.on.mockImplementation(() => {});
+
+  const { result } = renderHook(() => useVariant(givenFlagName));
+
+  // A correct hook re-reads on subscribe and reports the enabled variant. The
+  // buggy version stays on the disabled one.
+  expect(result.current).toBe(givenVariantA);
+});
+
+test('re-reads when the featureName argument changes', () => {
+  getVariantMock.mockImplementation((name: string) =>
+    name === 'flag-a' ? givenVariantA : givenVariantB
+  );
+  vi.mocked(useContext).mockReturnValue({
+    client: clientMock,
+    getVariant: getVariantMock,
+  });
+  clientMock.on.mockImplementation(() => {});
+
+  const { result, rerender } = renderHook(({ name }) => useVariant(name), {
+    initialProps: { name: 'flag-a' },
+  });
+  expect(result.current).toBe(givenVariantA);
+
+  // Pointing the hook at a different flag should return that flag's variant. The
+  // buggy version keeps the old one because `featureName` is missing from the
+  // effect deps.
+  rerender({ name: 'flag-b' });
+  expect(result.current).toBe(givenVariantB);
+});
+
 describe('Variant change detection', () => {
     test('If the variants are identical, it returns `false`', () => {
         const a = {

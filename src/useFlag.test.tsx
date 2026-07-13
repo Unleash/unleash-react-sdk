@@ -115,3 +115,33 @@ test('should remove event listeners when unmounted', () => {
   expect(clientMock.off).nthCalledWith(1, ...clientMock.on.mock.calls[0]);
   expect(clientMock.off).nthCalledWith(2, ...clientMock.on.mock.calls[1]);
 });
+
+test('reconciles the flag when ready/update fired before the effect subscribed', () => {
+  // Seeded false at render, but the client is actually enabled — the one-shot
+  // ready/update already fired, so `on` never invokes the handlers we register.
+  isEnabledMock.mockReturnValueOnce(false);
+  isEnabledMock.mockReturnValue(true);
+  clientMock.on.mockImplementation(() => {});
+
+  const { result } = renderHook(() => useFlag(givenFlagName));
+
+  // A correct hook re-reads once it subscribes and reports `true`. The buggy
+  // version stays stuck on its initial `false`.
+  expect(result.current).toBe(true);
+});
+
+test('re-reads when the featureName argument changes', () => {
+  isEnabledMock.mockImplementation((name: string) => name === 'enabled-flag');
+  clientMock.on.mockImplementation(() => {});
+
+  const { result, rerender } = renderHook(({ name }) => useFlag(name), {
+    initialProps: { name: 'enabled-flag' },
+  });
+  expect(result.current).toBe(true);
+
+  // Pointing the hook at a different, disabled flag should flip it to `false`.
+  // The buggy version keeps the old value because `featureName` is missing from
+  // the effect deps, so it never re-reads.
+  rerender({ name: 'some-other-flag' });
+  expect(result.current).toBe(false);
+});
