@@ -1,39 +1,26 @@
-import { useEffect, useState, useRef } from 'react';
+import { useCallback } from 'react';
+import { useSyncExternalStore } from 'use-sync-external-store/shim';
 import { useFlagContext } from './useFlagContext';
 
-const useFlag = (featureName: string) => {
-  const  { isEnabled, client }  = useFlagContext();
-  const [flag, setFlag] = useState(!!isEnabled(featureName));
-  const flagRef = useRef<typeof flag>(flag);
-  flagRef.current = flag;
+const useFlag = (featureName: string): boolean => {
+  const { isEnabled, client } = useFlagContext();
 
-  useEffect(() => {
-    if (!client) return;
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => {
+      if (!client) return () => {};
+      client.on('update', onStoreChange);
+      client.on('ready', onStoreChange);
+      return () => {
+        client.off('update', onStoreChange);
+        client.off('ready', onStoreChange);
+      };
+    },
+    [client]
+  );
 
-    const updateHandler = () => {
-      const enabled = isEnabled(featureName);
-      if (enabled !== flagRef.current) {
-        flagRef.current = enabled;
-        setFlag(!!enabled);
-      }
-    };
+  const getSnapshot = () => isEnabled(featureName);
 
-    const readyHandler = () => {
-      const enabled = isEnabled(featureName);
-      flagRef.current = enabled;
-      setFlag(enabled);
-    };
-
-    client.on('update', updateHandler);
-    client.on('ready', readyHandler);
-
-    return () => {
-      client.off('update', updateHandler);
-      client.off('ready', readyHandler);
-    };
-  }, [client]);
-
-  return flag;
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 };
 
 export default useFlag;

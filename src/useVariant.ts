@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useCallback } from 'react';
+import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector';
 import { IVariant } from 'unleash-proxy-client';
 import { useFlagContext } from './useFlagContext';
 
@@ -19,39 +20,31 @@ export const variantHasChanged = (
 const useVariant = (featureName: string): Partial<IVariant> => {
   const { getVariant, client } = useFlagContext();
 
-  const [variant, setVariant] = useState(getVariant(featureName));
-  const variantRef = useRef<typeof variant>({
-    name: variant.name,
-    enabled: variant.enabled,
-  });
-  variantRef.current = variant;
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => {
+      if (!client) return () => {};
+      client.on('update', onStoreChange);
+      client.on('ready', onStoreChange);
+      return () => {
+        client.off('update', onStoreChange);
+        client.off('ready', onStoreChange);
+      };
+    },
+    [client]
+  );
 
-  useEffect(() => {
-    if (!client) return;
+  const getSnapshot = useCallback(
+    () => getVariant(featureName),
+    [getVariant, featureName]
+  );
 
-    const updateHandler = () => {
-      const newVariant = getVariant(featureName);
-      if (variantHasChanged(variantRef.current, newVariant)) {
-        setVariant(newVariant);
-        variantRef.current = newVariant;
-      }
-    };
-
-    const readyHandler = () => {
-      const variant = getVariant(featureName);
-      variantRef.current.name = variant?.name;
-      variantRef.current.enabled = variant?.enabled;
-      setVariant(variant);
-    };
-
-    client.on('update', updateHandler);
-    client.on('ready', readyHandler);
-
-    return () => {
-      client.off('update', updateHandler);
-      client.off('ready', readyHandler);
-    };
-  }, [client]);
+  const variant = useSyncExternalStoreWithSelector(
+    subscribe,
+    getSnapshot,
+    getSnapshot,
+    (value) => value,
+    (a, b) => !variantHasChanged(a, b)
+  );
 
   return variant || {};
 };

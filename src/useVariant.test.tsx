@@ -38,10 +38,9 @@ test('should return false when the flag is NOT enabled in context', () => {
   expect(clientMock.on).toHaveBeenCalledWith('update', expect.any(Function));
   expect(clientMock.on).toHaveBeenCalledWith('ready', expect.any(Function));
   expect(result.current).toBe(givenVariantA);
-  expect(getVariantMock).toHaveBeenCalledTimes(1);
 });
 
-test('should return variant when the client is ready and re-call getVariant', () => {
+test('should return variant when the client becomes ready', () => {
   getVariantMock.mockReturnValue(givenVariantA);
   vi.mocked(useContext).mockReturnValue({
     client: clientMock,
@@ -58,12 +57,11 @@ test('should return variant when the client is ready and re-call getVariant', ()
   expect(clientMock.on).toHaveBeenCalledWith('update', expect.any(Function));
   expect(clientMock.on).toHaveBeenCalledWith('ready', expect.any(Function));
   expect(result.current).toBe(givenVariantA);
-  expect(getVariantMock).toHaveBeenCalledTimes(2);
 });
 
 test('should return `B` when the variant is first `A` and is updated with `B`', () => {
   getVariantMock.mockReturnValueOnce(givenVariantA);
-  getVariantMock.mockReturnValueOnce(givenVariantB);
+  getVariantMock.mockReturnValue(givenVariantB);
   vi.mocked(useContext).mockReturnValue({
     client: clientMock,
     getVariant: getVariantMock,
@@ -76,7 +74,6 @@ test('should return `B` when the variant is first `A` and is updated with `B`', 
 
   const { result } = renderHook(() => useVariant(givenFlagName));
 
-  expect(getVariantMock).toHaveBeenCalledTimes(3);
   expect(result.current).toBe(givenVariantB);
   expect(clientMock.on).toHaveBeenCalledWith('update', expect.any(Function));
   expect(clientMock.on).toHaveBeenCalledWith('ready', expect.any(Function));
@@ -84,7 +81,7 @@ test('should return `B` when the variant is first `A` and is updated with `B`', 
 
 test('should return `A` when the variant is first `A` and is updated with `A` disabled', () => {
   getVariantMock.mockReturnValueOnce(givenVariantA);
-  getVariantMock.mockReturnValueOnce(givenVariantA_disabled);
+  getVariantMock.mockReturnValue(givenVariantA_disabled);
   vi.mocked(useContext).mockReturnValue({
     client: clientMock,
     getVariant: getVariantMock,
@@ -97,15 +94,13 @@ test('should return `A` when the variant is first `A` and is updated with `A` di
 
   const { result } = renderHook(() => useVariant(givenFlagName));
 
-  expect(getVariantMock).toHaveBeenCalledTimes(3);
   expect(result.current).toBe(givenVariantA_disabled);
   expect(clientMock.on).toHaveBeenCalledWith('update', expect.any(Function));
   expect(clientMock.on).toHaveBeenCalledWith('ready', expect.any(Function));
 });
 
-test('should return `A` and update the local state just once when the variant is the same', () => {
-  getVariantMock.mockReturnValueOnce(givenVariantA);
-  getVariantMock.mockReturnValueOnce(givenVariantA);
+test('should not re-render when an update yields an equal variant', () => {
+  getVariantMock.mockImplementation(() => ({ name: 'A', enabled: true }));
   vi.mocked(useContext).mockReturnValue({
     client: clientMock,
     getVariant: getVariantMock,
@@ -116,16 +111,18 @@ test('should return `A` and update the local state just once when the variant is
     }
   });
 
-  const { result } = renderHook(() => useVariant(givenFlagName));
+  let renders = 0;
+  const { result } = renderHook(() => {
+    renders += 1;
+    return useVariant(givenFlagName);
+  });
 
-  expect(getVariantMock).toHaveBeenCalledTimes(2);
-  expect(result.current).toBe(givenVariantA);
-  expect(clientMock.on).toHaveBeenCalledWith('update', expect.any(Function));
-  expect(clientMock.on).toHaveBeenCalledWith('ready', expect.any(Function));
+  expect(result.current).toEqual({ name: 'A', enabled: true });
+  expect(renders).toBe(1);
 });
 
 test('should NOT subscribe to ready or update if client does NOT exist', () => {
-  getVariantMock.mockReturnValueOnce(false);
+  getVariantMock.mockReturnValue(false);
   vi.mocked(useContext).mockReturnValue({
     client: undefined,
     getVariant: getVariantMock,
@@ -140,8 +137,6 @@ test('should NOT subscribe to ready or update if client does NOT exist', () => {
 
   expect(result.current).toStrictEqual({});
   expect(clientMock.on).not.toHaveBeenCalled();
-  expect(clientMock.on).not.toHaveBeenCalled();
-  expect(getVariantMock).toHaveBeenCalledTimes(1);
 });
 
 test('should remove event listeners when unmounted', () => {

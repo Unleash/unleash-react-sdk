@@ -30,7 +30,6 @@ test('should return false when the flag is NOT enabled in context', () => {
   expect(clientMock.on).toHaveBeenCalledWith('update', expect.any(Function));
   expect(clientMock.on).toHaveBeenCalledWith('ready', expect.any(Function));
   expect(result.current).toBe(false);
-  expect(isEnabledMock).toHaveBeenCalledTimes(1);
 });
 
 test('should return true when the flag is enabled in context', () => {
@@ -40,10 +39,9 @@ test('should return true when the flag is enabled in context', () => {
   expect(clientMock.on).toHaveBeenCalledWith('update', expect.any(Function));
   expect(clientMock.on).toHaveBeenCalledWith('ready', expect.any(Function));
   expect(result.current).toBe(true);
-  expect(isEnabledMock).toHaveBeenCalledTimes(1);
 });
 
-test('should return true when the client is ready and re-call isEnabled', () => {
+test('should return true when the client becomes ready', () => {
   isEnabledMock.mockReturnValue(true);
   clientMock.on.mockImplementation((eventName: string, cb: Function) => {
     if (eventName === 'ready') {
@@ -56,12 +54,11 @@ test('should return true when the client is ready and re-call isEnabled', () => 
   expect(clientMock.on).toHaveBeenCalledWith('update', expect.any(Function));
   expect(clientMock.on).toHaveBeenCalledWith('ready', expect.any(Function));
   expect(result.current).toBe(true);
-  expect(isEnabledMock).toHaveBeenCalledTimes(2);
 });
 
 test('should return true when the client is first false and is updated with true', () => {
   isEnabledMock.mockReturnValueOnce(false);
-  isEnabledMock.mockReturnValueOnce(true);
+  isEnabledMock.mockReturnValue(true);
   clientMock.on.mockImplementation((eventName: string, cb: Function) => {
     if (eventName === 'update') {
       cb();
@@ -73,26 +70,28 @@ test('should return true when the client is first false and is updated with true
   expect(result.current).toBe(true);
   expect(clientMock.on).toHaveBeenCalledWith('update', expect.any(Function));
   expect(clientMock.on).toHaveBeenCalledWith('ready', expect.any(Function));
-  expect(isEnabledMock).toHaveBeenCalledTimes(3);
 });
 
-test('should set the local state only once', () => {
-  isEnabledMock.mockReturnValueOnce(true);
-  isEnabledMock.mockReturnValueOnce(true);
+test('should not re-render when an update leaves the value unchanged', () => {
+  isEnabledMock.mockReturnValue(true);
   clientMock.on.mockImplementation((eventName: string, cb: Function) => {
     if (eventName === 'update') {
       cb();
     }
   });
 
-  const { result } = renderHook(() => useFlag(givenFlagName));
+  let renders = 0;
+  const { result } = renderHook(() => {
+    renders += 1;
+    return useFlag(givenFlagName);
+  });
 
   expect(result.current).toBe(true);
-  expect(isEnabledMock).toHaveBeenCalledTimes(2);
+  expect(renders).toBe(1);
 });
 
 test('should NOT subscribe to ready or update if client does NOT exist', () => {
-  isEnabledMock.mockReturnValueOnce(false);
+  isEnabledMock.mockReturnValue(false);
   vi.mocked(useContext).mockImplementationOnce(() => ({
     client: undefined,
     isEnabled: isEnabledMock,
@@ -102,8 +101,6 @@ test('should NOT subscribe to ready or update if client does NOT exist', () => {
 
   expect(result.current).toBe(false);
   expect(clientMock.on).not.toHaveBeenCalled();
-  expect(clientMock.on).not.toHaveBeenCalled();
-  expect(isEnabledMock).toHaveBeenCalledTimes(1);
 });
 
 test('should remove event listeners when unmounted', () => {
