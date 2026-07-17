@@ -5,11 +5,15 @@ import useUnleashClientSubscription from './useUnleashClientSubscription';
 const useFlag = (featureName: string): boolean => {
   const { isEnabled, client } = useFlagContext();
 
-  const subscribe = useUnleashClientSubscription(client);
+  const subscribeToUnleashClient = useUnleashClientSubscription(client);
 
-  const getSnapshot = () => isEnabled(featureName);
+  const getFlagSnapshot = () => isEnabled(featureName);
 
-  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  return useSyncExternalStore(
+    subscribeToUnleashClient,
+    getFlagSnapshot,
+    getFlagSnapshot
+  );
 };
 
 export default useFlag;

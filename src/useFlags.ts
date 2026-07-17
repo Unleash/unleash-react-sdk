@@ -17,21 +17,23 @@ const togglesAreEqual = (a: IToggle[], b: IToggle[]): boolean =>
     );
   });
 
+const selectToggles = (toggles: IToggle[]) => toggles;
+
 const useFlags = (): IToggle[] => {
   const { client } = useFlagContext();
 
-  const subscribe = useUnleashClientSubscription(client);
+  const subscribeToUnleashClient = useUnleashClientSubscription(client);
 
-  const getSnapshot = useCallback(
+  const getTogglesSnapshot = useCallback(
     () => client?.getAllToggles() ?? [],
     [client]
   );
 
   return useSyncExternalStoreWithSelector(
-    subscribe,
-    getSnapshot,
-    getSnapshot,
-    (toggles) => toggles,
+    subscribeToUnleashClient,
+    getTogglesSnapshot,
+    getTogglesSnapshot,
+    selectToggles,
     togglesAreEqual
   );
 };

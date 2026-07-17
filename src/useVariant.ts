@@ -5,21 +5,23 @@ import { useFlagContext } from './useFlagContext';
 import useUnleashClientSubscription from './useUnleashClientSubscription';
 import variantsAreEqual from './variantsAreEqual';
 
+const selectVariant = (variant: IVariant) => variant;
+
 const useVariant = (featureName: string): Partial<IVariant> => {
   const { getVariant, client } = useFlagContext();
 
-  const subscribe = useUnleashClientSubscription(client);
+  const subscribeToUnleashClient = useUnleashClientSubscription(client);
 
-  const getSnapshot = useCallback(
+  const getVariantSnapshot = useCallback(
     () => getVariant(featureName),
     [getVariant, featureName]
   );
 
   const variant = useSyncExternalStoreWithSelector(
-    subscribe,
-    getSnapshot,
-    getSnapshot,
-    (variant) => variant,
+    subscribeToUnleashClient,
+    getVariantSnapshot,
+    getVariantSnapshot,
+    selectVariant,
     variantsAreEqual
   );
 
