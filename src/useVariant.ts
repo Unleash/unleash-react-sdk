@@ -3,20 +3,7 @@ import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/w
 import { IVariant } from 'unleash-proxy-client';
 import { useFlagContext } from './useFlagContext';
 import useUnleashClientSubscription from './useUnleashClientSubscription';
-
-export const variantHasChanged = (
-    oldVariant: IVariant,
-    newVariant?: IVariant,
-): boolean => {
-    const variantsAreEqual =
-        oldVariant.name === newVariant?.name &&
-        oldVariant.enabled === newVariant?.enabled &&
-        oldVariant.feature_enabled === newVariant?.feature_enabled &&
-        oldVariant.payload?.type === newVariant?.payload?.type &&
-        oldVariant.payload?.value === newVariant?.payload?.value;
-
-    return !variantsAreEqual;
-};
+import variantsAreEqual from './variantsAreEqual';
 
 const useVariant = (featureName: string): Partial<IVariant> => {
   const { getVariant, client } = useFlagContext();
@@ -32,8 +19,8 @@ const useVariant = (featureName: string): Partial<IVariant> => {
     subscribe,
     getSnapshot,
     getSnapshot,
-    (value) => value,
-    (a, b) => !variantHasChanged(a, b)
+    (variant) => variant,
+    variantsAreEqual
   );
 
   return variant || {};

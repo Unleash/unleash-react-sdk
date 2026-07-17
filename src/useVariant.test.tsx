@@ -1,7 +1,8 @@
 import { vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useContext } from 'react';
-import useVariant, { variantHasChanged } from './useVariant';
+import useVariant from './useVariant';
+import variantsAreEqual from './variantsAreEqual';
 
 vi.mock('react', async () => {
   const react = (await vi.importActual('react')) as any;
@@ -195,8 +196,8 @@ test('re-reads when the featureName argument changes', () => {
   expect(result.current).toBe(givenVariantB);
 });
 
-describe('Variant change detection', () => {
-    test('If the variants are identical, it returns `false`', () => {
+describe('Variant equality', () => {
+    test('If the variants are identical, it returns `true`', () => {
         const a = {
             name: 'a',
             enabled: true,
@@ -214,27 +215,27 @@ describe('Variant change detection', () => {
             },
         };
 
-        expect(variantHasChanged(a, b)).toBeFalsy();
+        expect(variantsAreEqual(a, b)).toBeTruthy();
     });
 
-    test('If the new variant is undefined, it counts as a change', () => {
+    test('If the second variant is undefined, they are not equal', () => {
         const a = { name: 'a', enabled: true };
 
-        expect(variantHasChanged(a, undefined)).toBeTruthy();
+        expect(variantsAreEqual(a, undefined)).toBeFalsy();
     });
 
     test('Name change is detected', () => {
         const a = { name: 'a', enabled: true };
         const b = { name: 'b', enabled: true };
 
-        expect(variantHasChanged(a, b)).toBeTruthy();
+        expect(variantsAreEqual(a, b)).toBeFalsy();
     });
 
     test('Enabled state change is detected', () => {
         const enabled = { name: 'a', enabled: true };
         const disabled = { name: 'a', enabled: false };
 
-        expect(variantHasChanged(enabled, disabled)).toBeTruthy();
+        expect(variantsAreEqual(enabled, disabled)).toBeFalsy();
     });
     test('Payload type change is detected', () => {
         const a = {
@@ -254,7 +255,7 @@ describe('Variant change detection', () => {
             },
         };
 
-        expect(variantHasChanged(a, b)).toBeTruthy();
+        expect(variantsAreEqual(a, b)).toBeFalsy();
     });
 
     test('Payload value change is detected', () => {
@@ -275,6 +276,6 @@ describe('Variant change detection', () => {
             },
         };
 
-        expect(variantHasChanged(a, b)).toBeTruthy();
+        expect(variantsAreEqual(a, b)).toBeFalsy();
     });
 });

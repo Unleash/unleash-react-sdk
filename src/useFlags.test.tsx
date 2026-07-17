@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { useContext } from 'react';
 import useFlags from './useFlags';
 
@@ -60,6 +60,43 @@ test('reconciles toggles that arrived before the effect subscribed', () => {
   // A correct hook re-reads once it subscribes and returns the toggles. The buggy
   // version stays on its empty initial list.
   expect(result.current).toBe(toggles);
+});
+
+test('does not re-render when an update yields equivalent toggles', () => {
+  getAllTogglesMock.mockImplementation(() => [
+    {
+      name: 'a',
+      enabled: true,
+      variant: { name: 'A', enabled: true },
+    },
+  ]);
+  vi.mocked(useContext).mockReturnValue({ client: clientMock });
+
+  let onUpdate: () => void = () => {};
+  clientMock.on.mockImplementation(
+    (eventName: string, callback: () => void) => {
+      if (eventName === 'update') {
+        onUpdate = callback;
+      }
+    }
+  );
+
+  let renders = 0;
+  const { result } = renderHook(() => {
+    renders += 1;
+    return useFlags();
+  });
+
+  act(() => onUpdate());
+
+  expect(result.current).toEqual([
+    {
+      name: 'a',
+      enabled: true,
+      variant: { name: 'A', enabled: true },
+    },
+  ]);
+  expect(renders).toBe(1);
 });
 
 test('should remove event listeners when unmounted', () => {
