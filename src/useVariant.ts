@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector';
 import { IVariant } from 'unleash-proxy-client';
 import { useFlagContext } from './useFlagContext';
+import useUnleashClientSubscription from './useUnleashClientSubscription';
 
 export const variantHasChanged = (
     oldVariant: IVariant,
@@ -20,18 +21,7 @@ export const variantHasChanged = (
 const useVariant = (featureName: string): Partial<IVariant> => {
   const { getVariant, client } = useFlagContext();
 
-  const subscribe = useCallback(
-    (onStoreChange: () => void) => {
-      if (!client) return () => {};
-      client.on('update', onStoreChange);
-      client.on('ready', onStoreChange);
-      return () => {
-        client.off('update', onStoreChange);
-        client.off('ready', onStoreChange);
-      };
-    },
-    [client]
-  );
+  const subscribe = useUnleashClientSubscription(client);
 
   const getSnapshot = useCallback(
     () => getVariant(featureName),
