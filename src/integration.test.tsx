@@ -264,50 +264,6 @@ test('should resolve values before setting flagsReady', async () => {
   });
 });
 
-test('should update useFlag when ready/update fires between render and effect', () => {
-  const client = createFakeClient();
-
-  const Component = () => {
-    const enabled = useFlag('test-flag');
-
-    return <div data-testid="state">{enabled.toString()}</div>;
-  };
-
-  render(
-    <FlagProvider
-      unleashClient={client as unknown as UnleashClient}
-      startClient={false}
-    >
-      <ResolveFetchDuringCommit client={client} />
-      <Component />
-    </FlagProvider>
-  );
-
-  expect(screen.getByTestId('state')).toHaveTextContent('true');
-});
-
-test('should update useVariant when ready/update fires between render and effect', () => {
-  const client = createFakeClient();
-
-  const Component = () => {
-    const variant = useVariant('test-flag');
-
-    return <div data-testid="variant">{variant.name}</div>;
-  };
-
-  render(
-    <FlagProvider
-      unleashClient={client as unknown as UnleashClient}
-      startClient={false}
-    >
-      <ResolveFetchDuringCommit client={client} />
-      <Component />
-    </FlagProvider>
-  );
-
-  expect(screen.getByTestId('variant')).toHaveTextContent('A');
-});
-
 type FakeClient = Pick<
   UnleashClient,
   | 'isEnabled'
@@ -396,6 +352,50 @@ const ResolveFetchDuringCommit = ({ client }: { client: FakeClient }) => {
   }, [client]);
   return null;
 };
+
+test('should update useFlag when ready/update fires between render and effect', () => {
+  const client = createFakeClient();
+
+  const Component = () => {
+    const enabled = useFlag('test-flag');
+
+    return <div data-testid="state">{enabled.toString()}</div>;
+  };
+
+  render(
+    <FlagProvider
+      unleashClient={client as unknown as UnleashClient}
+      startClient={false}
+    >
+      <ResolveFetchDuringCommit client={client} />
+      <Component />
+    </FlagProvider>
+  );
+
+  expect(screen.getByTestId('state')).toHaveTextContent('true');
+});
+
+test('should update useVariant when ready/update fires between render and effect', () => {
+  const client = createFakeClient();
+
+  const Component = () => {
+    const variant = useVariant('test-flag');
+
+    return <div data-testid="variant">{variant.name}</div>;
+  };
+
+  render(
+    <FlagProvider
+      unleashClient={client as unknown as UnleashClient}
+      startClient={false}
+    >
+      <ResolveFetchDuringCommit client={client} />
+      <Component />
+    </FlagProvider>
+  );
+
+  expect(screen.getByTestId('variant')).toHaveTextContent('A');
+});
 
 test('should update useFlags when update fires between render and effect', () => {
   const client = createFakeClient();
