@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector';
-import { IToggle } from 'unleash-proxy-client';
+import type { IToggle } from 'unleash-proxy-client';
 import { useFlagContext } from './useFlagContext';
 import useUnleashClientSubscription from './useUnleashClientSubscription';
 import variantsAreEqual from './variantsAreEqual';

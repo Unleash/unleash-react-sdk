@@ -1,6 +1,7 @@
 import React, { useLayoutEffect } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { EVENTS, IToggle, UnleashClient } from 'unleash-proxy-client';
+import { EVENTS, UnleashClient } from 'unleash-proxy-client';
+import type { IToggle } from 'unleash-proxy-client';
 import FlagProvider from './FlagProvider';
 import useFlagsStatus from './useFlagsStatus';
 import { act } from 'react-dom/test-utils';
