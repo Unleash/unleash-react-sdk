@@ -12,7 +12,12 @@ export default defineConfig({
       fileName: 'unleash-react',
     },
     rolldownOptions: {
-      external: ['react', 'unleash-proxy-client'],
+      external: [
+        'react',
+        'unleash-proxy-client',
+        'use-sync-external-store/shim',
+        'use-sync-external-store/shim/with-selector',
+      ],
       output: {
         exports: 'named',
         globals: {

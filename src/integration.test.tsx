@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { EVENTS, UnleashClient } from 'unleash-proxy-client';
+import type { IToggle } from 'unleash-proxy-client';
 import FlagProvider from './FlagProvider';
 import useFlagsStatus from './useFlagsStatus';
 import { act } from 'react-dom/test-utils';
 import useFlag from './useFlag';
 import { useFlagContext } from './useFlagContext';
 import useVariant from './useVariant';
+import useFlags from './useFlags';
 
 const fetchMock = vi.fn(async () => {
   return Promise.resolve({
@@ -261,4 +263,206 @@ test('should resolve values before setting flagsReady', async () => {
     expect(screen.queryByText('enabled')).toBeInTheDocument();
     expect(renders).toBe(3);
   });
+});
+
+type FakeClient = Pick<
+  UnleashClient,
+  | 'isEnabled'
+  | 'getVariant'
+  | 'getAllToggles'
+  | 'updateContext'
+  | 'start'
+  | 'stop'
+  | 'isReady'
+  | 'getError'
+> & {
+  // On the real client, these methods return `this`.
+  // It is hard to simulate in this fake client, so we return `void` instead.
+  on: (event: string, callback: () => void) => void;
+  off: (event: string, callback: () => void) => void;
+  // Test-only: allows us to simulate the client's first fetch resolving.
+  resolveFirstFetch: () => void;
+};
+
+const testToggle: IToggle = {
+  name: 'test-flag',
+  enabled: true,
+  variant: {
+    name: 'A',
+    enabled: true,
+    feature_enabled: true,
+    payload: { type: 'string', value: 'A' },
+  },
+  impressionData: false,
+};
+
+const createEventEmitter = () => {
+  const callbacks: Record<string, Array<() => void>> = {};
+
+  return {
+    on(event: string, callback: () => void) {
+      const current = callbacks[event] ?? [];
+      callbacks[event] = [...current, callback];
+    },
+    off(event: string, callback: () => void) {
+      const current = callbacks[event] ?? [];
+      callbacks[event] = current.filter((cb) => cb !== callback);
+    },
+    emit(event: string) {
+      const current = callbacks[event] ?? [];
+      current.forEach((callback) => callback());
+    },
+  };
+};
+
+const createFakeClient = (): FakeClient => {
+  const events = createEventEmitter();
+  let toggles: IToggle[] = [];
+
+  return {
+    on: events.on,
+    off: events.off,
+    isEnabled: (name) => Boolean(toggles.find((t) => t.name === name)?.enabled),
+    getVariant: (name) =>
+      toggles.find((t) => t.name === name)?.variant ?? {
+        name: 'disabled',
+        enabled: false,
+      },
+    getAllToggles: () => toggles,
+    updateContext: async () => {},
+    start: async () => {},
+    stop: () => {},
+    isReady: () => false,
+    getError: () => null,
+    resolveFirstFetch: () => {
+      // Set the toggles before emitting, so a listener that re-reads flag state
+      // while handling the event sees them — the same order the real client uses.
+      toggles = [testToggle];
+      events.emit('update');
+      events.emit('ready');
+    },
+  };
+};
+
+// Fires "first fetch resolved" from a layout effect, so the client emits
+// ready/update after the hook has rendered but before its passive effect
+// subscribes — the exact render-vs-effect gap that triggers the bug.
+const ResolveFetchDuringCommit = ({ client }: { client: FakeClient }) => {
+  useLayoutEffect(() => {
+    client.resolveFirstFetch();
+  }, [client]);
+  return null;
+};
+
+test('should update useFlag when ready/update fires between render and effect', () => {
+  const client = createFakeClient();
+
+  const Component = () => {
+    const enabled = useFlag('test-flag');
+
+    return <div data-testid="state">{enabled.toString()}</div>;
+  };
+
+  render(
+    <FlagProvider
+      unleashClient={client as unknown as UnleashClient}
+      startClient={false}
+    >
+      <ResolveFetchDuringCommit client={client} />
+      <Component />
+    </FlagProvider>
+  );
+
+  expect(screen.getByTestId('state')).toHaveTextContent('true');
+});
+
+test('should update useVariant when ready/update fires between render and effect', () => {
+  const client = createFakeClient();
+
+  const Component = () => {
+    const variant = useVariant('test-flag');
+
+    return <div data-testid="variant">{variant.name}</div>;
+  };
+
+  render(
+    <FlagProvider
+      unleashClient={client as unknown as UnleashClient}
+      startClient={false}
+    >
+      <ResolveFetchDuringCommit client={client} />
+      <Component />
+    </FlagProvider>
+  );
+
+  expect(screen.getByTestId('variant')).toHaveTextContent('A');
+});
+
+test('should update useFlags when update fires between render and effect', () => {
+  const client = createFakeClient();
+
+  const Component = () => {
+    const flags = useFlags();
+
+    return <div data-testid="count">{flags.length.toString()}</div>;
+  };
+
+  render(
+    <FlagProvider
+      unleashClient={client as unknown as UnleashClient}
+      startClient={false}
+    >
+      <ResolveFetchDuringCommit client={client} />
+      <Component />
+    </FlagProvider>
+  );
+
+  // The toggle arrived before the hook subscribed, so it must re-read to reach a
+  // count of 1 rather than stay on its empty initial list.
+  expect(screen.getByTestId('count')).toHaveTextContent('1');
+});
+
+test('should update useFlag when the featureName argument changes', () => {
+  const client = new UnleashClient({
+    url: 'http://localhost:4242/api/frontend',
+    appName: 'test',
+    clientKey: 'test',
+    fetch: fetchMock,
+    bootstrap: [
+      {
+        name: 'enabled-flag',
+        enabled: true,
+        variant: {
+          name: 'A',
+          enabled: true,
+          payload: { type: 'string', value: 'A' },
+        },
+        impressionData: false,
+      },
+    ],
+  });
+
+  const Component = ({ name }: { name: string }) => {
+    const enabled = useFlag(name);
+
+    return <div data-testid="state">{enabled.toString()}</div>;
+  };
+
+  const { rerender } = render(
+    <FlagProvider unleashClient={client} startClient={false}>
+      <Component name="enabled-flag" />
+    </FlagProvider>
+  );
+  expect(screen.getByTestId('state')).toHaveTextContent('true');
+
+  // The prop now points at a different flag that is disabled.
+  rerender(
+    <FlagProvider unleashClient={client} startClient={false}>
+      <Component name="some-other-flag" />
+    </FlagProvider>
+  );
+
+  // Pointing the hook at a different, disabled flag must flip it to `false`
+  // rather than keep showing the previous flag's `true`.
+  expect(screen.getByTestId('state')).toHaveTextContent('false');
 });

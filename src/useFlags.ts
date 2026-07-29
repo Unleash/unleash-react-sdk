@@ -1,23 +1,41 @@
-import { useEffect, useState } from 'react';
+import { useCallback } from 'react';
+import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector';
+import type { IToggle } from 'unleash-proxy-client';
 import { useFlagContext } from './useFlagContext';
+import useUnleashClientSubscription from './useUnleashClientSubscription';
+import variantsAreEqual from './variantsAreEqual';
 
-const useFlags = () => {
+const togglesAreEqual = (a: IToggle[], b: IToggle[]): boolean =>
+  a.length === b.length &&
+  a.every((toggle, index) => {
+    const other = b[index];
+    return (
+      Boolean(other) &&
+      toggle.name === other.name &&
+      toggle.enabled === other.enabled &&
+      variantsAreEqual(toggle.variant, other.variant)
+    );
+  });
+
+const selectToggles = (toggles: IToggle[]) => toggles;
+
+const useFlags = (): IToggle[] => {
   const { client } = useFlagContext();
-  const [flags, setFlags] = useState(client.getAllToggles());
 
-  useEffect(() => {
-    const onUpdate = () => {
-      setFlags(client.getAllToggles());
-    };
+  const subscribeToUnleashClient = useUnleashClientSubscription(client);
 
-    client.on('update', onUpdate);
+  const getTogglesSnapshot = useCallback(
+    () => client?.getAllToggles() ?? [],
+    [client]
+  );
 
-    return () => {
-      client.off('update', onUpdate);
-    };
-  }, []);
-
-  return flags;
+  return useSyncExternalStoreWithSelector(
+    subscribeToUnleashClient,
+    getTogglesSnapshot,
+    getTogglesSnapshot,
+    selectToggles,
+    togglesAreEqual
+  );
 };
 
 export default useFlags;
